@@ -13,7 +13,7 @@ setup(
     long_description_content_type="text/markdown",
     url="",
     packages=find_packages(include=['pyscaffold']),
-    package_data={'': ['data/gitignore-python', 'LICENSE']},
+    package_data={'': ['data/gitignore-python', 'data/LICENSE']},
     entry_points={
         'console_scripts': ['pyscaffold=pyscaffold.__main__:main']
     },
