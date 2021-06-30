@@ -10,6 +10,12 @@ Change current directory to download location and run
 pip install .
 ```
 
+Or install from VCS using pip
+
+```bash
+python3 -m pip install git+https://github.com/egxdigital/pyscaffold.git#egg=Pyscaffold
+```
+
 ## Usage
 
 1. First set an environment variable called 'python' to your preferred Python projects location.
