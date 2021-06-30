@@ -158,7 +158,8 @@ def create_innerpkg(root, name):
 def load_project(path, name):
     """Takes an absolute pathname representing a project root and a name 
     and loads the project with subdirectories and boilerplate"""
-    data = [_ for _ in Path.cwd().iterdir() if _.name == 'data'][0]
+    
+    data = PurePath(Path(__file__).parent.parent, 'data')
 
     make_dirs = {
         'bin': PurePath(path, 'bin'),
