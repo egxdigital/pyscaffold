@@ -9,7 +9,7 @@ import argparse
 from shutil import copyfile
 from pprint import pprint
 from pathlib import Path, PurePath
-from pyscaffold.helpers import capitalize_first_letter, lower_first_letter, get_file_name, get_func_name
+from pyscaffold.helpers import conventional_naming, get_file_name, get_func_name
 from pyscaffold.fragments import setup_py, readme_md, test_helpers_py, test_project_py, innermodule_py, innerpkg_helper_py, innerpkg_main_py
 
 
@@ -62,7 +62,7 @@ def copy_gitignore(data_dir, dest):
 def load_boilerplate_setup(path, project):
     """Takes an absolute pathname to setup.py and a project name loads boilerplate 
     code into the file at that location"""
-    Project = capitalize_first_letter(project)
+    Project = conventional_naming(project, is_package=False)
     try:
         Path(path).write_text(setup_py.format(
             project=project, Project=Project))
@@ -91,7 +91,7 @@ def insert_init_py(dest):
 def load_boilerplate_innerpkg_helper(path, project):
     """Takes an absolute pathname to helpers.py and a project name and loads boilerplate
     code into the file at that location"""
-    Project = capitalize_first_letter(project)
+    Project = conventional_naming(project, is_package=False)
     try:
         Path(path).write_text(innerpkg_helper_py.format(
             Project=Project, project=project))
@@ -102,7 +102,7 @@ def load_boilerplate_innerpkg_helper(path, project):
 def load_boilerplate_innerpkg_main(path, project):
     """Takes an absolute pathname to __main__.py and a project name loads boilerplate 
     code into the file at that location"""
-    Project = capitalize_first_letter(project)
+    Project = conventional_naming(project, is_package=False)
     try:
         Path(path).write_text(innerpkg_main_py.format(
             Project=Project, project=project))
@@ -113,7 +113,7 @@ def load_boilerplate_innerpkg_main(path, project):
 def load_boilerplate_innermodule(path, project):
     """Takes an absolute pathname to <project>.py and a project name and loads boilerplate 
     code into the file at that location"""
-    Project = capitalize_first_letter(project)
+    Project = conventional_naming(project, is_package=False)
     try:
         Path(path).write_text(innermodule_py.format(
             Project=Project, project=project))
@@ -124,7 +124,7 @@ def load_boilerplate_innermodule(path, project):
 def load_boilerplate_test_helpers(path, project):
     """Takes an absolute pathname to test_helpers.py and a project name and loads boilerplate 
     code into the file at that location"""
-    Project = capitalize_first_letter(project)
+    Project = conventional_naming(project, is_package=False)
     try:
         Path(path).write_text(test_helpers_py.format(
             Project=Project, project=project))
@@ -135,7 +135,7 @@ def load_boilerplate_test_helpers(path, project):
 def load_boilerplate_test_innerpkg(path, project):
     """Takes an absolute pathname to test_<project>.py and a project name and loads boilerplate 
     code into the file at that location"""
-    Project = capitalize_first_letter(project)
+    Project = conventional_naming(project, is_package=False)
     try:
         Path(path).write_text(test_project_py.format(
             Project=Project, project=project))
@@ -262,11 +262,10 @@ def main():
         print(f"Error: invalid command - {commands[0]}")
         return
 
-    proj_names = commands[1:]
+    proj_names = [conventional_naming(name) for name in commands[1:]]
 
-    projects = {lower_first_letter(name): PurePath(projects_folder, capitalize_first_letter(name))
+    projects = {name : PurePath(projects_folder, conventional_naming(name, is_package=False))
                 for name in proj_names}
-
 
     for name, path in projects.items():
         create_project_root(path)

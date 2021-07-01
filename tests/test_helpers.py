@@ -14,20 +14,6 @@ class TestHelpers(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_capitalize_first_letter(self):
-        err = "Only first letter should be capitalized"
-        a = capitalize_first_letter("testA")
-        self.assertEqual(a, "TestA", err)
-        b = capitalize_first_letter("testInTheWaters")
-        self.assertEqual(b, "TestInTheWaters", err)
-    
-    def test_lower_first_letter(self):
-        err = "Only first letter should be lowered"
-        a = lower_first_letter("TestA")
-        self.assertEqual(a, "testA", err)
-        b = lower_first_letter("TestInTheWaters")
-        self.assertEqual(b, "testInTheWaters", err)
-    
     def test_get_func_name(self):
         def func():
             return get_func_name()
@@ -38,6 +24,49 @@ class TestHelpers(unittest.TestCase):
         name = get_file_name()
         self.assertEqual(
             name, 'test_helpers.py', "Should return name of enclosing file")
+
+    def test_is_camel_case(self):
+        test = is_camel_case('test')
+        testme = is_camel_case('testme')
+        TestMe = is_camel_case('TestMe')
+        testMe = is_camel_case('testMe')
+        TESTME = is_camel_case('TESTME')
+        TESTme = is_camel_case('TESTme')
+        test_me = is_camel_case('test_me')
+
+        self.assertFalse(test)
+        self.assertFalse(testme)
+        self.assertTrue(TestMe)
+        self.assertTrue(testMe)
+        self.assertFalse(TESTME)
+        self.assertTrue(TESTme)
+        self.assertFalse(test_me)
+
+    def test_contains_hyphen(self):
+        test = contains_hyphen('test')
+        test_me = contains_hyphen('test_me')
+        _testme = contains_hyphen('_testme')
+        _testme_ = contains_hyphen('_testme_')
+
+        self.assertFalse(test)
+        self.assertTrue(test_me)     
+        self.assertTrue(_testme)
+        self.assertTrue(_testme)
+
+    def conventional_naming(self):
+        test_cases = [
+            "CaMeLcAsE"
+            "camelCase",
+            "CamelCase",
+            "CAMELcase",
+            "camelCASE",
+            "CAMELCASE",
+            "camel_case"
+        ]
+        for s in test_cases:
+            self.assertEqual(conventional_naming(test_cases[s]), "camelcase")
+            self.assertEqual(conventional_naming(test_cases[s], False), "Camelcase")
+
 
 if __name__ == '__main__':
     unittest.main()
