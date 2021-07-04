@@ -240,37 +240,49 @@ def main():
                            type=str,
                            required=False,
                            help='provide a destination for project. default is current directory')
-    my_parser.add_argument('commands',
+    my_parser.add_argument('args',
                            nargs='+',
                            help="use a command eg. init or start")
 
     args = my_parser.parse_args()
 
-    valid_commands = ['start']
+    valid_commands = ['start', 'resume']
 
     projects_folder = os.getenv('python', default=Path.cwd())
 
     options = vars(args)
 
-    commands = options['commands']
+    args = options['args']
     dest = options['destination']
 
     if dest == True:
         projects_folder = dest
 
-    if commands[0] not in valid_commands:
-        print(f"Error: invalid command - {commands[0]}")
+    if args[0] not in valid_commands:
+        print(f"Error: invalid command - {args[0]}")
         return
-
-    proj_names = [conventional_naming(name) for name in commands[1:]]
-
-    projects = {name : PurePath(projects_folder, conventional_naming(name, is_package=False))
-                for name in proj_names}
-
-    for name, path in projects.items():
-        create_project_root(path)
-        load_project(path=path, name=name)
-        deploy_virtual_environment(path, 'env')
     
-    if len(projects) == 1:
-        activate_virtual_env(projects[proj_names[0]], 'env')
+    proj_names = [conventional_naming(name) for name in args[1:]]
+
+    if args[0] == 'start':
+        projects = {name : PurePath(projects_folder, conventional_naming(name, is_package=False))
+                    for name in proj_names}
+
+        for name, path in projects.items():
+            create_project_root(path)
+            load_project(path=path, name=name)
+            deploy_virtual_environment(path, 'env')
+        
+        if len(projects) == 1:
+            activate_virtual_env(projects[proj_names[0]], 'env')
+
+    if args[0] == 'resume':
+        if len(proj_names) > 1:
+            print("For now, resume only one project")
+            sys.exit()
+        
+        proj = proj_names[0]
+
+        path_to_proj = PurePath(projects_folder, conventional_naming(proj, is_package=False))
+
+        activate_virtual_env(path_to_proj, 'env')       
