@@ -7,7 +7,6 @@ import sys
 import subprocess
 import argparse
 from shutil import copyfile
-from pprint import pprint
 from pathlib import Path, PurePath
 from pyscaffold.helpers import conventional_naming, get_file_name, get_func_name
 from pyscaffold.fragments import setup_py, readme_md, test_helpers_py, test_project_py, innermodule_py, innerpkg_helper_py, innerpkg_main_py
@@ -226,23 +225,19 @@ def main():
     my_parser = argparse.ArgumentParser(
         prog='pyscaffold',
         fromfile_prefix_chars='@',
-        usage='%(prog)s [options] start PROJECT_NAME',
+        usage='%(prog)s start [OPTION] project_name',
         description='Scaffold Python applications',
         epilog='Build it! :)')
 
-    my_parser.add_argument('-c',
-                           '--classic',
-                           action='store_true',
-                           required=False,
-                           help='create a legacy-style project')
     my_parser.add_argument('-d', '--destination',
                            action='store',
                            type=str,
                            required=False,
-                           help='provide a destination for project. default is current directory')
-    my_parser.add_argument('args',
+                           help='valid directory pathname as project directory')
+
+    my_parser.add_argument('arguments',
                            nargs='+',
-                           help="use a command eg. init or start")
+                           help="pyscaffold [start, resume] <project>[, <projectA>, ...]")
 
     args = my_parser.parse_args()
 
@@ -252,19 +247,21 @@ def main():
 
     options = vars(args)
 
-    args = options['args']
+    arguments = options['arguments']
     dest = options['destination']
 
-    if dest == True:
+    command = arguments[0]
+
+    if dest is not None:
         projects_folder = dest
 
-    if args[0] not in valid_commands:
-        print(f"Error: invalid command - {args[0]}")
-        return
+    if command not in valid_commands:
+        print(f"Error: invalid command - {command}")
+        sys.exit()
     
-    proj_names = [conventional_naming(name) for name in args[1:]]
+    proj_names = [conventional_naming(name) for name in arguments[1:]]
 
-    if args[0] == 'start':
+    if command == 'start':        
         projects = {name : PurePath(projects_folder, conventional_naming(name, is_package=False))
                     for name in proj_names}
 
@@ -276,7 +273,7 @@ def main():
         if len(projects) == 1:
             activate_virtual_env(projects[proj_names[0]], 'env')
 
-    if args[0] == 'resume':
+    if command == 'resume':
         if len(proj_names) > 1:
             print("For now, resume only one project")
             sys.exit()
@@ -285,4 +282,4 @@ def main():
 
         path_to_proj = PurePath(projects_folder, conventional_naming(proj, is_package=False))
 
-        activate_virtual_env(path_to_proj, 'env')       
+        activate_virtual_env(path_to_proj, 'env')
