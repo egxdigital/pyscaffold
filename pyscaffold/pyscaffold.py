@@ -9,7 +9,7 @@ import argparse
 from shutil import copyfile
 from pathlib import Path, PurePath
 from pyscaffold.helpers import conventional_naming, get_file_name, get_func_name
-from pyscaffold.fragments import setup_py, readme_md, test_helpers_py, test_project_py, innermodule_py, innerpkg_helper_py, innerpkg_main_py
+from pyscaffold.fragments import pyscaffold_ascii, setup_py, readme_md, test_helpers_py, test_project_py, innermodule_py, innerpkg_helper_py, innerpkg_main_py
 
 
 def activate_virtual_env(root, env_name):
@@ -226,7 +226,8 @@ def main():
         prog='pyscaffold',
         fromfile_prefix_chars='@',
         usage='%(prog)s start [OPTION] project_name',
-        description='Scaffold Python applications',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=pyscaffold_ascii,
         epilog='Build it! :)')
 
     my_parser.add_argument('-d', '--destination',
