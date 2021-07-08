@@ -52,3 +52,6 @@ Project
     README.md
     setup.py
 ```
+## Acknowledgements
+
+Thank you [Stephan Tual](https://github.com/stephantual) for [your solution to to the argparse description field limitation](https://stackoverflow.com/a/15721870)
