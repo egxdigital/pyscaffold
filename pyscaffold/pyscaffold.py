@@ -29,11 +29,11 @@ def activate_virtual_env(root, env_name):
             print(e)
 
 
-def deploy_virtual_environment(root, env_name):
+def deploy_virtual_environment(root, env_name, ver=3.6):
     """Takes an absolute path to the root project directory and the enclosed environment name
     to deploy the virtual environment"""
     path_to_env = PurePath(root, env_name)
-    command = f"/usr/bin/python3 -m virtualenv {path_to_env}"
+    command = f"/usr/bin/python{ver} -m virtualenv {path_to_env} --python=python{ver}"
     try:
         subprocess.run(command.split())
     except Exception as e:
@@ -230,6 +230,12 @@ def main():
         description=pyscaffold_ascii,
         epilog='Build it! :)')
 
+    my_parser.add_argument('-p', '--python',
+                           action='store',
+                           type=float,
+                           required=False,
+                           help='python version')
+    
     my_parser.add_argument('-d', '--destination',
                            action='store',
                            type=str,
@@ -250,8 +256,12 @@ def main():
 
     arguments = options['arguments']
     dest = options['destination']
+    python_version = options['python']
 
     command = arguments[0]
+
+    if python_version is None:
+        python_version = 3.6
 
     if dest is not None:
         projects_folder = dest
@@ -269,7 +279,7 @@ def main():
         for name, path in projects.items():
             create_project_root(path)
             load_project(path=path, name=name)
-            deploy_virtual_environment(path, 'env')
+            deploy_virtual_environment(path, 'env', python_version)
         
         if len(projects) == 1:
             activate_virtual_env(projects[proj_names[0]], 'env')
