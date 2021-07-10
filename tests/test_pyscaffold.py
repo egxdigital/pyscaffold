@@ -62,6 +62,8 @@ class TestPyscaffold(unittest.TestCase):
             "\n"
             "This module contains the main function definitions for the Deleteme program.\n"
             "\"\"\"\n"
+            "\n"
+            "import argparse\n"
             "from deleteme.helpers import *\n"
             "\n"
             "def main():\n"

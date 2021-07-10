@@ -72,6 +72,8 @@ innermodule_py = (
     "\n"
     "This module contains the main function definitions for the {Project} program.\n"
     "\"\"\"\n"
+    "\n"
+    "import argparse\n"
     "from {project}.helpers import *\n"
     "\n"
     "def main():\n"
