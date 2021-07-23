@@ -1,6 +1,8 @@
 # pyscaffold
 
-> A CLI tool for scaffolding projects
+> A CLI tool for scaffolding Python projects
+
+Tested only on Linux so far.
 
 ## Installation
 
@@ -18,7 +20,7 @@ python3 -m pip install git+https://github.com/egxdigital/pyscaffold.git#egg=Pysc
 
 ## Usage
 
-1. First set an environment variable called 'python' to your preferred Python projects location.
+1. First set an environment variable called 'python' to your preferred Python projects location or edit the line in the code to reflect your own shell variable for your projects folder.
 
 Or 
 
@@ -52,6 +54,18 @@ Project
     README.md
     setup.py
 ```
+
+## Why pyscaffold?
+
+The question that may come to mind is, why not just use an IDE?
+
+Now pyscaffold was born purely of a personal preference to use the familiar environment of the command-line interpreter to spin up Python projects.
+
+It helps that modern text editors come with amazing features that sometimes surpass outstanding IDE's and what's more, unlike good IDE's, many great modern text editors are absolutely free.
+
+**When paired with an extensible text-editor, this tool proves indispensable.**
+
+
 ## Acknowledgements
 
 Thank you [Stephan Tual](https://github.com/stephantual) for [your solution to to the argparse description field limitation](https://stackoverflow.com/a/15721870)
