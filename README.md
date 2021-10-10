@@ -4,6 +4,16 @@
 
 Tested only on Linux so far.
 
+## TODO
+
+- convert to class [COMPLETED]
+- Add parser.error() [COMPLETED]
+- Add function check_env_python_version()
+    - invoke in replace_env()
+- Add error() to concatenate colors to a string [COMPLETED]
+- Add test for the pyscaffold class
+- Update test case fragment to include test for new class [COMPLETED]
+
 ## Installation
 
 Change current directory to download location and run
@@ -44,9 +54,11 @@ Project
     project/
         __init__.py
         __main__.py
+        config.py
         helpers.py
         project.py
     tests/
+        data/
         test_helpers.py
         test_project.py
     .gitignore
@@ -57,15 +69,13 @@ Project
 
 ## Why pyscaffold?
 
-The question that may come to mind is, why not just use an IDE?
-
-Now pyscaffold was born purely of a personal preference to use the familiar environment of the command-line interpreter to spin up Python projects.
+Why not just use an IDE?
 
 It helps that modern text editors come with amazing features that sometimes surpass outstanding IDE's and what's more, unlike good IDE's, many great modern text editors are absolutely free.
-
-**When paired with an extensible text-editor, this tool proves indispensable.**
 
 
 ## Acknowledgements
 
-Thank you [Stephan Tual](https://github.com/stephantual) for [your solution to to the argparse description field limitation](https://stackoverflow.com/a/15721870)
+Thanks to:
+- [Depado](https://github.com/Depado) and [Peter Mortensen](https://github.com/PeterMortensen) for [solution to "activating virtual environment from a python script"](https://stackoverflow.com/a/18037819)
+- [Stephan Tual](https://github.com/stephantual) for [solution to to the argparse description field limitation](https://stackoverflow.com/a/15721870)
