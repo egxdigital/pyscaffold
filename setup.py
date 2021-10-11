@@ -3,10 +3,11 @@
 This module contains the setuptools.setup() definition for the Pyscaffold program.
 
 Usage
+    pip freeze > requirements.txt \\
     deactivate \\
-    pip freeze > requirements.txt\\
     sudo python3.9 -m setup develop
 """
+import os
 from pathlib import Path, PurePath
 from setuptools import setup, find_packages
 
@@ -15,13 +16,20 @@ requirements = []
 requirements_txt = PurePath(
     Path(__file__).resolve().parent, 'requirements.txt')
 
-if Path(requirements_txt).is_file():
-    with open(Path(requirements_txt)) as fd:
-        lines = fd.readlines()[:-2]
-        requirements += lines
+def read_requirements_file(fd):
+    res = []
+    if Path(fd).is_file():
+        with open(fd, 'r') as reader:
+            reqs = [lin.strip('{newline}')
+                    for lin in reader.readlines() if '#' not in lin]
+            res += [req for req in reqs if os.getenv(
+                'python', '/home/engineer/source/python/projects') not in req]
+    return res
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
+
+requirements = read_requirements_file(requirements_txt)
 
 setup(
     name="Pyscaffold",
@@ -44,5 +52,5 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.6'
+    python_requires='>=3.9'
 )
