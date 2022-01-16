@@ -4,15 +4,11 @@
 
 Tested only on Linux so far.
 
-## TODO
+## Why pyscaffold?
 
-- convert to class [COMPLETED]
-- Add parser.error() [COMPLETED]
-- Add function check_env_python_version()
-    - invoke in replace_env()
-- Add error() to concatenate colors to a string [COMPLETED]
-- Add test for the pyscaffold class
-- Update test case fragment to include test for new class [COMPLETED]
+Why not just use an IDE?
+
+It helps that modern text editors come with amazing features that sometimes surpass outstanding IDE's and what's more, unlike good IDE's, many great modern text editors are absolutely free.
 
 ## Installation
 
@@ -66,13 +62,24 @@ Project
     README.md
     setup.py
 ```
+<br>
 
-## Why pyscaffold?
+---
 
-Why not just use an IDE?
+<br>
 
-It helps that modern text editors come with amazing features that sometimes surpass outstanding IDE's and what's more, unlike good IDE's, many great modern text editors are absolutely free.
+## To do
 
+- Add function check_env_python_version()
+    - invoke in replace_env()
+- Migrate fron unittest to pytest
+    - Add test for the pyscaffold class
+
+<br>
+
+---
+
+<br>
 
 ## Acknowledgements
 
