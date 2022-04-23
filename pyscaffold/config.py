@@ -7,8 +7,8 @@ DATA      = Path(PurePath(ROOT, 'data'))
 TESTS     = Path(PurePath(ROOT, 'tests'))
 TEST_DATA = Path(PurePath(TESTS, 'data'))
 
-PYTHON_VERSION  = 3.9
-PROJECTS_FOLDER = os.getenv('python', default=Path.cwd())
+PYTHON_VERSION  = "3.10"
+PROJECTS_FOLDER = os.getenv('PYTHON', default=Path.cwd())
 
 class ERROR():
     bad_command         = 'invalid command!'

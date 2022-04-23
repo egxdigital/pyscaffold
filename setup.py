@@ -5,7 +5,7 @@ This module contains the setuptools.setup() definition for the Pyscaffold progra
 Usage
     pip freeze > requirements.txt \\
     deactivate \\
-    sudo python3.9 -m setup develop
+    sudo python3.10 -m setup develop
 """
 import os
 from pathlib import Path, PurePath
@@ -52,5 +52,5 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.9'
+    python_requires='>=3.10'
 )

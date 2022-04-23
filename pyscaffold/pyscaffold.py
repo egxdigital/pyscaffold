@@ -143,14 +143,14 @@ class Pyscaffold():
             project = self.projects[0]
             self.replace_env(project)
 
-    def create_project_root(self, path):
+    def create_project_root(self, path:Path):
         """Takes an absolute path and makes a directory at that location"""
         try:
             Path(path).mkdir(parents=True, exist_ok=False)
         except FileExistsError as e:
             self.parser.error(error(self.command, ERROR.project_exists, path))
 
-    def load_project(self, path, name, ver=3.9):
+    def load_project(self, path:Path, name:str, ver:str="3.10"):
         """Takes an absolute pathname representing a project root and a name 
         and loads the project with subdirectories and boilerplate.
 
@@ -268,7 +268,7 @@ class Pyscaffold():
         destination = PurePath(Path(dest), '.gitignore')
         copyfile(source, destination)
 
-    def load_boilerplate_setup(self, path, project, ver=3.9):
+    def load_boilerplate_setup(self, path, project, ver:str="3.10"):
         """Takes an absolute pathname to setup.py and a project name loads boilerplate 
         code into the file at that location"""
         Project = conventional_naming(project, is_package=False)
@@ -412,9 +412,9 @@ def main():
 
     parser.add_argument('-p', '--python',
                         action='store',
-                        type=float,
+                        type=str,
                         required=False,
-                        help='python version')
+                        help='specify python version')
 
     parser.add_argument('-d', '--destination',
                         action='store',
