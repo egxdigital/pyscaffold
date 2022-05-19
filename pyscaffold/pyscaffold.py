@@ -164,6 +164,8 @@ class Pyscaffold():
 
         data = PurePath(Path(__file__).parent.parent, 'data')
 
+        name = conventional_naming(name, is_package=True)
+
         make_dirs = {
             'bin': PurePath(path, 'bin'),
             'data': PurePath(path, 'data'),
