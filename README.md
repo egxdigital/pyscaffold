@@ -32,7 +32,7 @@ python3.10 -m virtualenv env
 Install editable build (in development mode)
 
 ```bash
-./install.sh
+./install
 ```
 
 ## Usage
@@ -45,7 +45,7 @@ Or
 2. To scaffold an installable Python application, run
 
 ```bash
-pyscaffold start <project_name>
+pyscaffold start <project_name> --python 3.10
 ```
 
 Creates a directory with the following contents including boilerplate code.

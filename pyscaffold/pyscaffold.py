@@ -194,7 +194,8 @@ class Pyscaffold():
                 'helpers': PurePath(make_dirs[name], "helpers.py")
             },
             'readme': PurePath(path, 'README.md'),
-            'setup': PurePath(path, 'setup.py')
+            'setup': PurePath(path, 'setup.py'),
+            'install': PurePath(path, 'install.sh')
         }
 
         test_innerpkg = contents['tests']['innerpkg']
@@ -219,6 +220,7 @@ class Pyscaffold():
 
         self.copy_license(data, path)
         self.copy_gitignore(data, path)
+        self.copy_install_sh(data, path)
 
     def activate_virtual_env(self, root, env_name):
         """Takes an absolute path to the root project directory and the enclosed environment name
@@ -268,6 +270,14 @@ class Pyscaffold():
         """
         source = PurePath(Path(data_dir), 'gitignore-python')
         destination = PurePath(Path(dest), '.gitignore')
+        copyfile(source, destination)
+    
+    def copy_install_sh(self, data_dir, dest):
+        """Takes an absolute path to a data directory containing the install.sh file as source
+        and copies it to destination
+        """
+        source = PurePath(Path(data_dir), 'install')
+        destination = PurePath(Path(dest), 'install')
         copyfile(source, destination)
 
     def load_boilerplate_setup(self, path, project, ver:str="3.10"):
