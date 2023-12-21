@@ -3,11 +3,8 @@
 This module contains the setuptools.setup() definition for the Pyscaffold program.
 
 Usage
-    pip freeze > requirements.txt \\
-    deactivate \\
-    sudo python3.10 -m setup develop
+    ./install.sh
 """
-import os
 from pathlib import Path, PurePath
 from setuptools import setup, find_packages
 
@@ -20,10 +17,8 @@ def read_requirements_file(fd):
     res = []
     if Path(fd).is_file():
         with open(fd, 'r') as reader:
-            reqs = [lin.strip('{newline}')
+            res += [lin.strip('{newline}')
                     for lin in reader.readlines() if '#' not in lin]
-            res += [req for req in reqs if os.getenv(
-                'python', '/home/engineer/source/python/projects') not in req]
     return res
 
 with open("README.md", "r") as fh:
@@ -33,7 +28,7 @@ requirements = read_requirements_file(requirements_txt)
 
 setup(
     name="Pyscaffold",
-    version="0.0.0",
+    version="1.0.0",
     author="Emille Giddings",
     author_email="emilledigital@gmail.com",
     description="Scaffold Python projects",
@@ -41,7 +36,7 @@ setup(
     long_description_content_type="text/markdown",
     url="",
     install_requires=requirements,
-    packages=find_packages(include=['pyscaffold']),
+    packages=find_packages(),
     package_data={'': ['data/gitignore-python', 'data/LICENSE']},
     entry_points={
         'console_scripts': ['pyscaffold=pyscaffold.__main__:main']
@@ -52,5 +47,10 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.10'
+    python_requires='>=3.10',
+    setup_requires=[
+        'setuptools>=42',
+        'wheel',
+        'setuptools_scm>=3.4',
+    ],
 )

@@ -11,21 +11,31 @@ Why not just use an IDE?
 It helps that modern text editors come with amazing features that sometimes surpass outstanding IDE's and what's more, unlike good IDE's, many great modern text editors are absolutely free.
 
 ## Installation
-
-Change current directory to download location and run
+### 1. Download
 
 ```bash
-pip install .
+git clone https://github.com/egxdigital/pyscaffold.git
+```
+### 2. Install and develop
+Ensure that your user is the owner of the project root and all of its contents
+
+```bash
+sudo chown -R /path/to/repository/root
 ```
 
-Or install from VCS using pip
+Create a virtual environment for the project
 
 ```bash
-python3 -m pip install git+https://github.com/egxdigital/pyscaffold.git#egg=Pyscaffold
+python3.10 -m virtualenv env
+```
+
+Install editable build (in development mode)
+
+```bash
+./install.sh
 ```
 
 ## Usage
-
 1. First set an environment variable called 'python' to your preferred Python projects location or edit the line in the code to reflect your own shell variable for your projects folder.
 
 Or 
