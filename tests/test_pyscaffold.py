@@ -21,13 +21,37 @@ def setup_and_teardown():
     yield dummy_projects_dir, project_path
 
     # Teardown: Clean up the dummy project directory
-    for item in project_path.iterdir():
+    for item in dummy_projects_dir.iterdir():
         if item.is_dir():
             shutil.rmtree(item)
         else:
             item.unlink()
-    
-    project_path.rmdir()
+
+def test_create_project_folder(setup_and_teardown):
+    dummy_projects_dir, _ = setup_and_teardown
+    project_name = "NewTestProject"
+
+    project_path = Pyscaffold.create_project_folder(project_name, str(dummy_projects_dir))
+
+    # Verify that the project folder was created
+    assert project_path.exists()
+    assert project_path.is_dir()
+    assert project_path.name == project_name
+
+def test_create_project_folder_already_exists(setup_and_teardown):
+    dummy_projects_dir, project_path = setup_and_teardown
+    project_name = project_path.name
+
+    with pytest.raises(FileExistsError):
+        Pyscaffold.create_project_folder(project_name, str(dummy_projects_dir))
+
+def test_create_project_folder_invalid_path(setup_and_teardown):
+    dummy_projects_dir, _ = setup_and_teardown
+    invalid_destination = "/invalid/path"
+    project_name = "InvalidProject"
+
+    with pytest.raises(OSError):
+        Pyscaffold.create_project_folder(project_name, invalid_destination)
 
 def test_start():
     pass

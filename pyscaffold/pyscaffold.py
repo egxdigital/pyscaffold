@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 from pyscaffold.utils import (
@@ -13,11 +14,29 @@ class Pyscaffold():
         return
     
     @staticmethod
-    def start(project_names, destination, **kwargs):
-        #print('IN start() -> destination: ', kwargs.get('destination'))
-        for p in project_names:
-            print(f"Starting project: {p} at {destination}")
-            # create project folder
+    def create_project_folder(project_name: str, destination: str) -> Path:
+        project_path = Path(destination) / project_name
+        
+        if project_path.exists():
+            raise FileExistsError(f"The project folder '{project_path}' already exists.")
+        
+        if not os.path.isdir(destination):
+            raise OSError(f"The destination path '{destination}' is invalid.")
+
+        project_path.mkdir(parents=True, exist_ok=True)
+        return project_path  
+
+    @staticmethod
+    def start(project_names, **kwargs):
+        destination = kwargs.get('destination', None)
+        
+        for project_name in project_names:
+            project_path = Pyscaffold.create_project_folder(project_name, destination)
+
+            if project_path:
+                print(f"Starting project: {project_name} at {project_path}")
+            else:
+                print(f"Failed to create project folder for '{project_name}'.")
             # deploy package
             #    deploy package contents
             # deploy tests package
