@@ -6,7 +6,7 @@ from pyscaffold.utils import (
     activate_virtual_env
 )
 
-class Pyscaffold():    
+class Pyscaffold():
     @staticmethod
     def list_projects(*args, **kwargs):
         print(kwargs)
