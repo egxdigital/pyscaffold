@@ -1,25 +1,4 @@
-import os
-from pathlib import Path, PurePath
-
-ROOT      = Path(__file__).resolve().parent.parent
-PKG       = Path(__file__).resolve().parent
-DATA      = Path(PurePath(ROOT, 'data'))
-TESTS     = Path(PurePath(ROOT, 'tests'))
-TEST_DATA = Path(PurePath(TESTS, 'data'))
-
-PYTHON_VERSION  = "3.10"
-PROJECTS_FOLDER = os.getenv('PYTHON', default=Path.cwd())
-
-class ERROR():
-    bad_command         = 'invalid command!'
-    bad_directory       = 'invalid destination directory!'
-    bad_project_list    = 'invalid project list format!'
-    bad_python_version  = 'python version does not exist!'
-    no_projects         = 'no projects specified!'
-    no_env_found        = 'no virtual environment found!'
-    more_than_one       = 'too many projects!'
-    project_not_found   = 'project not found!'
-    project_exists      = 'project already exists!'
+from pathlib import Path
 
 class colors():
     HEADER     = '\033[95m'
@@ -31,3 +10,84 @@ class colors():
     ENDC       = '\033[0m'
     BOLD       = '\033[1m'
     UNDERLINE  = '\033[4m'
+
+class Config():
+    EXPLICIT_STRING_DEFS = {
+        'PROJECTS': {
+            'pathname':'/mnt/c/Users/engineer/source/python',
+            'description': 'Absolute path to global projects directory on local machine',
+            'is_relative': False
+        },
+        'TEST_PROJECTS': {
+            'pathname': 'tests/dummyprojects',
+            'description': 'Relative path to test projects directory for use during testing',
+            'is_relative': True
+        },
+        'ENV': {
+            'pathname': './.env',
+            'description': 'Relative path to project root environment variables',
+            'absolute': True
+
+        },
+        'TEST_ENV': {
+            'pathname': 'tests/.env',
+            'description': 'Relative to test environment variables',
+            'is_relative': True
+        }
+    }
+    @staticmethod
+    def display():
+        """
+        Display all configuration settings.
+        """
+        from pprint import pprint
+        pprint(Config.EXPLICIT_STRING_DEFS)
+
+    @staticmethod
+    def get_config_value_by_variable_name(variable_name: str) -> Path:
+        """
+        Retrieve the pathname associated with the given variable name.
+        
+        Args:
+            variable_name (str): The configuration variable name.
+        
+        Returns:
+            Path: The resolved pathname.
+        
+        Raises:
+            KeyError: If the variable name is not found.
+            ValueError: If the resolved path does not exist.
+        """
+        config = Config.EXPLICIT_STRING_DEFS.get(variable_name)
+        if config is None:
+            raise KeyError(f"Not a valid variable name: {variable_name}")
+
+        path = Path(config['pathname'])
+        if config['is_relative']:
+            path = Path(__file__).resolve().parent.parent / path
+
+        if not path.exists():
+            raise ValueError(f'Pathname setting for {variable_name} is not valid: {path}')
+        
+        return path
+    
+    @staticmethod
+    def compare_config_value_with_environment_variable(env_var_name: str, value: str):
+        """
+        Compare the provided environment variable value with the configuration setting.
+        
+        Args:
+            env_var_name (str): The environment variable name.
+            value (str): The value to compare.
+        
+        Returns:
+            bool: True if the value matches the configuration setting, False otherwise.
+        
+        Raises:
+            KeyError: If the environment variable name is not found.
+        """
+        config = Config.EXPLICIT_STRING_DEFS.get(env_var_name)
+        if config is None:
+            raise KeyError(f"Not a valid variable name: {env_var_name}")
+
+        return value == config['pathname']
