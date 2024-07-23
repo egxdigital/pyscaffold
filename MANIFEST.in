@@ -1,0 +1,4 @@
+include pyscaffold/config.yaml
+include pyscaffold/data/gitignore-python
+include pyscaffold/data/LICENSE
+

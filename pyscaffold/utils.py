@@ -2,7 +2,6 @@ import os
 import argparse
 import subprocess
 from pathlib import Path
-from dotenv import load_dotenv
 
 from pyscaffold.config import Config, colors
 from pyscaffold.helpers import apply_project_naming_convention
@@ -21,11 +20,11 @@ def change_directory(project_path: Path) -> None:
     os.chdir(project_path)
 
 def set_destination(args: argparse.Namespace) -> None:
+    config = Config()
     if os.getenv('ON_TEST'):
-        print("In set_destination() -> ON_TEST", os.getenv('ON_TEST') == '1')
-        projects_directory_setting = Config.get_config_value_by_variable_name('TEST_PROJECTS')
+        projects_directory_setting = config.get_tests_directory_path()
     else:
-        projects_directory_setting = Config.get_config_value_by_variable_name('PROJECTS')
+        projects_directory_setting = config.get_projects_directory_path()
     
     destination = getattr(args, 'destination', None)
 
@@ -37,7 +36,7 @@ def set_destination(args: argparse.Namespace) -> None:
     elif projects_directory_setting and Path(projects_directory_setting).is_dir():
         args.destination = projects_directory_setting
     else:
-        raise ValueError("A valid destination directory must be provided either via --destination or by setting the value in Config.")
+        raise ValueError("A valid destination directory must be provided either via --destination or by setting the value in config.yaml")
 
 def apply_naming_conventions(args: argparse.Namespace) -> None:
     if hasattr(args, 'project_name'):
@@ -50,12 +49,12 @@ def preprocess_arguments(args: argparse.Namespace) -> None:
     apply_naming_conventions(args)
 
 def execute_command(command: str) -> bool:
-    # TODO: Write test for this guy
     try:
         subprocess.run(command, shell=True, executable='/bin/bash', check=True)
         return True
     except subprocess.CalledProcessError as e:
-        print(f"Error occurred: {e.stderr.decode()}")
+        #print(f"Error occurred: {e.stderr.decode()}")
+        print(e)
         return False
 
 def activate_virtual_env(project_path):

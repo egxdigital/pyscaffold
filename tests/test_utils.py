@@ -6,9 +6,9 @@ from unittest import mock
 
 from pyscaffold.config import Config
 from pyscaffold.utils import (
-    activate_virtual_env, 
-    project_exists, 
-    project_ready, 
+    activate_virtual_env,
+    project_exists,
+    project_ready,
     change_directory,
     set_destination, 
     apply_naming_conventions,
@@ -17,7 +17,8 @@ from pyscaffold.utils import (
 
 @pytest.fixture(scope="function")
 def setup_and_teardown():
-    dummy_projects_dir = Config.get_config_value_by_variable_name('TEST_PROJECTS')
+    config = Config()
+    dummy_projects_dir = config.get_tests_directory_path()
 
     project_path =  dummy_projects_dir / "TestProject"
 
@@ -28,7 +29,7 @@ def setup_and_teardown():
     (project_path / 'venv' / 'bin').mkdir(parents=True, exist_ok=True)
     (project_path / 'venv' / 'bin' / 'activate').touch()
 
-    yield dummy_projects_dir, project_path
+    yield dummy_projects_dir, project_path, config
 
     # Teardown: Clean up the dummy project directory    
     for item in project_path.iterdir():
@@ -40,25 +41,24 @@ def setup_and_teardown():
     project_path.rmdir()
 
 def test_project_exists(setup_and_teardown):
-    dummy_projects_dir, project_path = setup_and_teardown
+    dummy_projects_dir, __, _ = setup_and_teardown
     assert project_exists("TestProject", dummy_projects_dir) == True
     assert project_exists("nonexistent_project", dummy_projects_dir) == False
 
 def test_project_ready(setup_and_teardown):
-    dummy_projects_dir, project_path = setup_and_teardown
+    _, project_path, _ = setup_and_teardown
     assert project_ready(project_path) == True
     (project_path / 'setup.py').unlink()
     assert project_ready(project_path) == False
 
 def test_change_directory(setup_and_teardown):
-    dummy_projects_dir, project_path = setup_and_teardown
+    _, project_path, _ = setup_and_teardown
     with mock.patch('os.chdir') as mock_chdir:
         change_directory(project_path)
         mock_chdir.assert_called_once_with(project_path)
 
-
 def test_set_destination_with_valid_destination(setup_and_teardown):
-    dummy_projects_dir, project_path = setup_and_teardown
+    __, project_path, _ = setup_and_teardown
     args = Namespace(destination=str(project_path))
     set_destination(args)
     assert args.destination == str(project_path)
@@ -70,34 +70,59 @@ def test_set_destination_with_invalid_destination():
         set_destination(args)
 
 def test_set_destination_with_no_destination_and_on_test(monkeypatch, setup_and_teardown):
-    dummy_projects_dir, project_path = setup_and_teardown
+    dummy_projects_dir, __, _ = setup_and_teardown
     monkeypatch.setenv('ON_TEST', '1')
     args = Namespace(destination=None)
-    assert args.destination == None
+    assert args.destination is None
     set_destination(args)
     monkeypatch.delenv('ON_TEST', raising=False)
     assert args.destination == dummy_projects_dir
 
 def test_set_destination_with_no_destination_and_not_on_test(monkeypatch, setup_and_teardown):
-    dummy_projects_dir, project_path = setup_and_teardown
+    ___, __, config = setup_and_teardown
     monkeypatch.delenv('ON_TEST', raising=False)
     args = Namespace(destination=None)
     set_destination(args)
-    assert args.destination == Config.get_config_value_by_variable_name('PROJECTS')
+    assert args.destination == config.get_projects_directory_path()
 
-def test_set_destination_with_no_valid_destination(monkeypatch):
+def test_set_destination_with_no_destination_and_invalid_projects_dir(monkeypatch, setup_and_teardown):
+    ___, __, config = setup_and_teardown
     monkeypatch.delenv('ON_TEST', raising=False)
     invalid_projects_dir = '/invalid/projects/path'
-    monkeypatch.setattr(Config, 'EXPLICIT_STRING_DEFS', {
-        'PROJECTS': {
-            'pathname': invalid_projects_dir,
-            'description': 'Invalid projects directory',
-            'is_relative': False
-        }
-    })
+
+    from pathlib import Path
+
+    # Create a mock Config class that returns the desired settings
+    class MockConfig:
+        def __init__(self):
+            self.settings = {
+                'locations': {
+                    'PROJECTS': invalid_projects_dir
+                }
+            }
+
+        def get_tests_directory_path(self):
+            return Path(self.settings['locations']['PROJECTS'])
+
+        def get_projects_directory_path(self):
+            return Path(self.settings['locations']['PROJECTS'])
+
+        def get(self, key, default=None):
+            keys = key.split('.')
+            value = self.settings
+            for k in keys:
+                if isinstance(value, dict):
+                    value = value.get(k, default)
+                else:
+                    return default
+            return value
+
+    # Replace the Config class in the utils module with the mock version
+    monkeypatch.setattr('pyscaffold.utils.Config', MockConfig)
+    
     args = Namespace(destination=None)
 
-    with pytest.raises(ValueError, match=f"Pathname setting for PROJECTS is not valid: {invalid_projects_dir}"):
+    with pytest.raises(ValueError, match=f"A valid destination directory must be provided either via --destination or by setting the value in config.yaml"):
         set_destination(args)
 
 def test_apply_naming_conventions_single_name():
@@ -111,14 +136,14 @@ def test_apply_naming_conventions_multiple_names():
     assert args.project_names == ['Testproject1', 'Testproject2']
 
 def test_preprocess_arguments_valid_destination(setup_and_teardown):
-    dummy_projects_dir, project_path = setup_and_teardown
+    dummy_projects_dir, __, _ = setup_and_teardown
     args = Namespace()
     args.destination = dummy_projects_dir
     preprocess_arguments(args)
     assert args.destination == dummy_projects_dir
 
 def test_preprocess_arguments_env_variable(setup_and_teardown, monkeypatch):
-    dummy_projects_dir, project_path = setup_and_teardown
+    dummy_projects_dir, __, _ = setup_and_teardown
     monkeypatch.setenv('ON_TEST', '1')
     args = Namespace()
     preprocess_arguments(args)
@@ -145,7 +170,7 @@ def test_preprocess_arguments_project_name():
 
 @mock.patch("subprocess.run")
 def test_activate_virtual_env(mock_subprocess_run, setup_and_teardown, monkeypatch):
-    dummy_projects_dir, project_path = setup_and_teardown
+    dummy_projects_dir, project_path, _ = setup_and_teardown
     
     # Mocking other utility functions
     with mock.patch("pyscaffold.utils.project_exists", return_value=True):
@@ -171,7 +196,7 @@ def test_activate_virtual_env(mock_subprocess_run, setup_and_teardown, monkeypat
 
 @mock.patch("pyscaffold.utils.execute_command")
 def test_activate_virtual_env_non_test(mock_execute_command, setup_and_teardown):
-    dummy_projects_dir, project_path = setup_and_teardown
+    dummy_projects_dir, project_path, _ = setup_and_teardown
     
     # Mocking other utility functions if needed
     with mock.patch("pyscaffold.utils.project_exists", return_value=True):

@@ -20,9 +20,10 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(),
-    data_files=[
-        ('data', ['data/gitignore-python', 'data/LICENSE'])
-        ],
+    include_package_data=True,
+    package_data={
+        'pyscaffold': ['config.yaml', 'data/gitignore-python', 'data/LICENSE']
+    },
     entry_points={
         'console_scripts': ['pyscaffold=pyscaffold.__main__:main']
     },

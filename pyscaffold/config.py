@@ -1,3 +1,4 @@
+import yaml
 from pathlib import Path
 
 class colors():
@@ -12,82 +13,115 @@ class colors():
     UNDERLINE  = '\033[4m'
 
 class Config():
-    EXPLICIT_STRING_DEFS = {
-        'PROJECTS': {
-            'pathname':'/mnt/c/Users/engineer/source/python',
-            'description': 'Absolute path to global projects directory on local machine',
-            'is_relative': False
-        },
-        'TEST_PROJECTS': {
-            'pathname': 'tests/dummyprojects',
-            'description': 'Relative path to test projects directory for use during testing',
-            'is_relative': True
-        },
-        'ENV': {
-            'pathname': './.env',
-            'description': 'Relative path to project root environment variables',
-            'absolute': True
+    def __init__(self, config_path=None):
+        self.settings = {}
+        if config_path is None:
+            config_path = Path(__file__).resolve().parent.parent / 'config.yaml'
+        self.load_from_file(config_path)
 
-        },
-        'TEST_ENV': {
-            'pathname': 'tests/.env',
-            'description': 'Relative to test environment variables',
-            'is_relative': True
-        }
-    }
-    @staticmethod
-    def display():
+    def load_from_file(self, config_path):
+        """
+        Load configuration settings from a YAML file.
+        
+        Args:
+            config_path (str): Path to the YAML configuration file.
+        """
+        with open(config_path, 'r') as file:
+            self.settings = yaml.safe_load(file)
+
+    def get(self, key, default=None):
+        """
+        Retrieve a configuration value by its key.
+        
+        Args:
+            key (str): The key to look up in the configuration.
+            default: The default value to return if the key is not found.
+        
+        Returns:
+            The value associated with the key, or the default value.
+        """
+        keys = key.split('.')
+        value = self.settings
+        for k in keys:
+            if isinstance(value, dict):
+                value = value.get(k, default)
+            else:
+                return default
+        return value
+
+    def add_setting(self, name, **kwargs):
+        """
+        Add a new setting to the configuration.
+        
+        Args:
+            name (str): The name of the new setting.
+            kwargs: The key-value pairs for the new setting.
+        
+        Returns:
+            self
+        """
+        self.settings[name] = kwargs
+        return self
+
+    def update_setting(self, name, **kwargs):
+        """
+        Update an existing setting in the configuration.
+        
+        Args:
+            name (str): The name of the setting to update.
+            kwargs: The key-value pairs to update the setting with.
+        
+        Returns:
+            self
+        """
+        if name in self.settings:
+            self.settings[name].update(kwargs)
+        else:
+            self.settings[name] = kwargs
+        return self
+
+    def display(self):
         """
         Display all configuration settings.
         """
         from pprint import pprint
-        pprint(Config.EXPLICIT_STRING_DEFS)
-
-    @staticmethod
-    def get_config_value_by_variable_name(variable_name: str) -> Path:
+        pprint(self.settings)
+    
+    def get_projects_directory_path(self) -> Path:
         """
-        Retrieve the pathname associated with the given variable name.
-        
-        Args:
-            variable_name (str): The configuration variable name.
-        
+        Retrieve the absolute path to the global projects directory.
+
         Returns:
-            Path: The resolved pathname.
+            Path: The resolved projects directory pathname.
         
         Raises:
-            KeyError: If the variable name is not found.
             ValueError: If the resolved path does not exist.
         """
-        config = Config.EXPLICIT_STRING_DEFS.get(variable_name)
-        if config is None:
-            raise KeyError(f"Not a valid variable name: {variable_name}")
-
-        path = Path(config['pathname'])
-        if config['is_relative']:
-            path = Path(__file__).resolve().parent.parent / path
+        path = Path(self.get("locations.PROJECTS"))
 
         if not path.exists():
-            raise ValueError(f'Pathname setting for {variable_name} is not valid: {path}')
+            raise ValueError('Projects directory has not been set.')
         
         return path
-    
-    @staticmethod
-    def compare_config_value_with_environment_variable(env_var_name: str, value: str):
+
+    def get_tests_directory_path(self, abs=False) -> Path:
         """
-        Compare the provided environment variable value with the configuration setting.
-        
+        Retrieve the path to the test projects directory.
+
         Args:
-            env_var_name (str): The environment variable name.
-            value (str): The value to compare.
-        
+            abs (bool): If True, returns the absolute path.
+
         Returns:
-            bool: True if the value matches the configuration setting, False otherwise.
+            Path: The resolved test projects directory pathname.
         
         Raises:
-            KeyError: If the environment variable name is not found.
+            ValueError: If the resolved path does not exist.
         """
-        config = Config.EXPLICIT_STRING_DEFS.get(env_var_name)
-        if config is None:
-            raise KeyError(f"Not a valid variable name: {env_var_name}")
-
-        return value == config['pathname']
+        path = Path(self.get("locations.TEST_PROJECTS"))
+        if abs:
+            path = Path(__file__).resolve().parent.parent / path
+        
+        if not path.exists():
+            raise ValueError('Tests directory does not exist.')
+        
+        return path
