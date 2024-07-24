@@ -1,3 +1,9 @@
+"""
+Pyscaffold Utilities
+
+This module contains tests for the Pyscaffold utility functions.
+
+"""
 import os
 import argparse
 import subprocess

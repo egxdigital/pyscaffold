@@ -1,3 +1,9 @@
+"""
+Pyscaffold Test CLI
+
+This module contains tests for the Pyscaffold CLI.
+
+"""
 import shutil
 import subprocess
 from pathlib import Path

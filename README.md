@@ -3,7 +3,7 @@
 
 # TODO
 [x] Test arg_parser.py
-[ ] Test fragments.py
+[x] Test fragments.py
 [ ] Test pyscaffold.py
 [ ] Add _version.py and update setup.py
 [ ] Tag master branch before creation of refactor-branch as version 0.1.0

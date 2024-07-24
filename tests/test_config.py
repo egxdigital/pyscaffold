@@ -1,4 +1,9 @@
-# In tests/test_config.py
+"""
+Pyscaffold Test Configuration
+
+This module contains tests for the Pyscaffold configuration settings.
+
+"""
 import pytest
 from pathlib import Path
 from pyscaffold.config import Config

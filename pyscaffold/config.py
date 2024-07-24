@@ -1,3 +1,8 @@
+"""
+Pyscaffold Config
+
+This module contains configuration definitions for the Pyscaffold application.
+"""
 import yaml
 from pathlib import Path
 

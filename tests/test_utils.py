@@ -1,8 +1,15 @@
+"""
+Pyscaffold Test Utilities
+
+This module contains tests for the Pyscaffold utility functions.
+
+"""
 import shutil
+from pathlib import Path
+from unittest import mock
 from argparse import Namespace
 
 import pytest
-from unittest import mock
 
 from pyscaffold.config import Config
 from pyscaffold.utils import (
@@ -19,6 +26,7 @@ from pyscaffold.utils import (
 def setup_and_teardown():
     config = Config()
     dummy_projects_dir = config.get_tests_directory_path()
+    Path(dummy_projects_dir).mkdir(parents=True, exist_ok=True)
 
     project_path =  dummy_projects_dir / "TestProject"
 
@@ -32,13 +40,11 @@ def setup_and_teardown():
     yield dummy_projects_dir, project_path, config
 
     # Teardown: Clean up the dummy project directory    
-    for item in project_path.iterdir():
+    for item in dummy_projects_dir.iterdir():
         if item.is_dir():
             shutil.rmtree(item)
         else:
             item.unlink()
-    
-    project_path.rmdir()
 
 def test_project_exists(setup_and_teardown):
     dummy_projects_dir, __, _ = setup_and_teardown

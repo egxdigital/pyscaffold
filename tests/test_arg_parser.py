@@ -1,3 +1,9 @@
+"""
+Pyscaffold Test Arg Parser
+
+This module contains tests for the Pyscaffold argument parser functionality.
+
+"""
 import pytest
 from pyscaffold.arg_parser import create_parser
 

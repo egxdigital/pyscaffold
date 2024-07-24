@@ -1,3 +1,9 @@
+"""
+Pyscaffold Argument Parser
+
+This module contains the argument parsing functionality of the Pyscaffold application.
+
+"""
 import argparse
 from pyscaffold.config import colors
 from pyscaffold.fragments import pyscaffold_ascii

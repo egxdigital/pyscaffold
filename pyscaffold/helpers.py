@@ -1,3 +1,10 @@
+"""
+Pyscaffold Helpers
+
+This module contains helper function definitions for the Pyscaffold application.
+
+"""
+
 def apply_project_naming_convention(name: str) -> str:
     """
     Apply Pascal naming convention to a given project name. Converts strings like

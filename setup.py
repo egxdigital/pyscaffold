@@ -1,4 +1,5 @@
-"""Pyscaffold Setup
+"""
+Pyscaffold Setup
 
 This module contains the setuptools.setup() definition for the Pyscaffold program.
 
@@ -13,7 +14,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="Pyscaffold",
-    version="0.1.0",
+    version="1.0.0",
     author="Emille Giddings",
     author_email="emilledigital@gmail.com",
     description="Scaffold Python projects",

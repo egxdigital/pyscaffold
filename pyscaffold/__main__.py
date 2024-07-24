@@ -1,20 +1,30 @@
-"""pyscaffold
+"""
+Entry point for the Pyscaffold application.
 
-A CLI application for scaffolding Python applications
+This script serves as the main entry point for the Pyscaffold application. 
+It initializes the application, processes command-line arguments, and 
+starts the main functionality of the project.
 
-Examples
-    pyscaffold list
+Usage:
     pyscaffold start projectA --python 3.10
     pyscaffold resume projectA
 
+Arguments:
+    -h, --help      Show this help message and exit.
+    -v, --version   Show the version of the application and exit.
+    --config FILE   Specify a configuration file.
+
+Functions:
+    main()      The main function that initializes and runs the application.
+    execute()   The function that invokes the subcommand passed to the application.
+
 """
-#from pyscaffold.pyscaffold import Pyscaffold
 from pyscaffold.pyscaffold import Pyscaffold
 from pyscaffold.arg_parser import create_parser
 from pyscaffold.utils import preprocess_arguments
 
 SUBCOMMANDS = {
-    'list': Pyscaffold.list_projects,
+    'list': None,
     'start': Pyscaffold.start,
     'resume': Pyscaffold.resume
 }

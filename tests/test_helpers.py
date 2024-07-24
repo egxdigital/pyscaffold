@@ -1,3 +1,9 @@
+"""
+Pyscaffold Test Helpers
+
+This module contains tests for the Pyscaffold helper functions.
+
+"""
 import pytest
 from pyscaffold.helpers import (
     apply_project_naming_convention,
