@@ -585,6 +585,57 @@ def test_test_package_module_py(setup):
 
     assert result == expected
 
+def test_arg_parser_py(setup):
+    """
+    Test TEST_ARG_PARSER_PY
+    """
+    project_name, package_name = setup
+
+    expected = (
+        "\"\"\"\n"
+        "TestProject Test Arg Parser\n"
+        "\n"
+        "This module contains tests for the TestProject argument parser functionality.\n"
+        "\n"
+        "\"\"\"\n"
+        "import pytest\n"
+        "from test_project.arg_parser import create_parser\n"
+        "\n"
+        "def test_version_option(capsys):\n"
+        "    parser = create_parser()\n"
+        "    with pytest.raises(SystemExit):\n"
+        "        parser.parse_args(['--version'])\n"
+        "    captured = capsys.readouterr()\n"
+        "    assert 'test_project 1.0.0' in captured.out\n"
+        "\n"
+        "def test_subcommand1():\n"
+        "    parser = create_parser()\n"
+        "    args = parser.parse_args(['subcommand1', '--destination', 'some/directory'])\n"
+        "    assert args.command == 'subcommand1'\n"
+        "    assert args.destination == 'some/directory'\n"
+        "\n"
+        "def test_subcommand2():\n"
+        "    parser = create_parser()\n"
+        "    args = parser.parse_args(['subcommand2', 'arg1', '--opt', 'optval'])\n"
+        "    assert args.command == 'subcommand2'\n"
+        "    assert args.arg_name == ['arg1']\n"
+        "    assert args.opt == 'optval'\n"
+        "\n"
+        "def test_subcommand3():\n"
+        "    parser = create_parser()\n"
+        "    args = parser.parse_args(['subcommand3', 'arg1', '--opt', 'optval'])\n"
+        "    assert args.command == 'subcommand3'\n"
+        "    assert args.arg_name == 'arg1'\n"
+        "    assert args.opt == 'optval'\n"
+    )
+
+    result = fragments.TEST_PKG_ARG_PARSER_PY.format(
+        ProjectName=project_name,
+        packagename=package_name
+    )
+
+    assert result == expected
+
 def test_test_cli_py(setup):
     """
     Test test_config_py
