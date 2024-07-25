@@ -36,15 +36,15 @@ def test_pkg_config_py(setup):
         "from pathlib import Path\n"
         "\n"
         "class colors():\n"
-        "    HEADER     = '\033[95m'\n"
-        "    OKBLUE     = '\033[94m'\n"
-        "    OKCYAN     = '\033[96m'\n"
-        "    OKGREEN    = '\033[92m'\n"
-        "    WARNING    = '\033[93m'\n"
-        "    FAIL       = '\033[91m'\n"
-        "    ENDC       = '\033[0m'\n"
-        "    BOLD       = '\033[1m'\n"
-        "    UNDERLINE  = '\033[4m'\n"
+        "    HEADER     = '\\033[95m'\n"
+        "    OKBLUE     = '\\033[94m'\n"
+        "    OKCYAN     = '\\033[96m'\n"
+        "    OKGREEN    = '\\033[92m'\n"
+        "    WARNING    = '\\033[93m'\n"
+        "    FAIL       = '\\033[91m'\n"
+        "    ENDC       = '\\033[0m'\n"
+        "    BOLD       = '\\033[1m'\n"
+        "    UNDERLINE  = '\\033[4m'\n"
         "\n"    
         "class Config():\n"
         "    def __init__(self, config_path=None):\n"
@@ -120,23 +120,6 @@ def test_pkg_config_py(setup):
         "        \"\"\"\n"
         "        from pprint import pprint\n"
         "        pprint(self.settings)\n"
-        "\n"        
-        "    def get_projects_directory_path(self) -> Path:\n"
-        "        \"\"\"\n"
-        "        Retrieve the absolute path to the global projects directory.\n"
-        "\n"
-        "        Returns:\n"
-        "            Path: The resolved projects directory pathname.\n"
-        "\n"            
-        "        Raises:\n"
-        "            ValueError: If the resolved path does not exist.\n"
-        "        \"\"\"\n"
-        "        path = Path(self.get('locations.PROJECTS'))\n"
-        "\n"
-        "        if not path.exists():\n"
-        "            raise ValueError('Projects directory has not been set.')\n"
-        "\n"            
-        "        return path\n"
         "\n"
         "    def get_tests_directory_path(self, abs=False) -> Path:\n"   
         "        \"\"\"\n"
@@ -151,7 +134,7 @@ def test_pkg_config_py(setup):
         "        Raises:\n"
         "            ValueError: If the resolved path does not exist.\n"
         "        \"\"\"\n"
-        "        path = Path(self.get('locations.TEST_PROJECTS'))\n"
+        "        path = Path(self.get('settings.DUMMY_DIR'))\n"
         "        if abs:\n"
         "            path = Path(__file__).resolve().parent.parent / path\n"
         "\n"            
@@ -202,8 +185,7 @@ def test_pkg_utils_py(setup):
         "This module contains utility function definitions for the TestProject application.\n"
         "\n"
         "\"\"\"\n"
-        "\n"
-        "import argarse\n"
+        "import argparse\n"
         "\n"
         "def do_something(args: argparse.Namespace):\n"
         "    return args\n"
@@ -241,7 +223,6 @@ def test_pkg_module_py(setup):
         "This module contains the class definition for the TestProject class.\n"
         "\n"
         "\"\"\"\n"
-        "\n"
         "class TestProject():\n"
         "    @staticmethod\n"
         "    def subcommand1(*args, **kwargs):\n"
@@ -304,14 +285,16 @@ def test_pkg_arg_parser_py(setup):
         "\n"      
         "    subparsers = parser.add_subparsers(dest='command', required=True)\n"
         "\n"
-        "    subcommand_1_parser = subparsers.add_parser('list', help='List projects')\n"
-        "    subcommand_1_parser.add_argument('-d', '--destination', type=str, help='Valid directory pathname as project directory')\n"
+        "    subcommand_1_parser = subparsers.add_parser('subcommand1', help='subcommand1')\n"
+        "    subcommand_1_parser.add_argument('-d', '--destination', type=str, help='Valid directory pathname as destination directory')\n"
         "\n"
-        "    subcommand_2_parser = subparsers.add_parser('start', help='Start a project')\n"
-        "    subcommand_2_parser.add_argument('project_names', nargs='+', type=str, help='Name(s) of the project to start')\n"
+        "    subcommand_2_parser = subparsers.add_parser('subcommand2', help='subcommand2')\n"
+        "    subcommand_2_parser.add_argument('listedargs', nargs='+', type=str, help='list of args for subcommand2')\n"
+        "    subcommand_2_parser.add_argument('-o', '--opt', type=str, help='modifier for subcommand2')\n"
         "\n"
-        "    subcommand_3_parser = subparsers.add_parser('resume', help='Resume a project')\n"
-        "    subcommand_3_parser.add_argument('project_name', type=str, help='Name of the project to resume')\n"
+        "    subcommand_3_parser = subparsers.add_parser('subcommand3', help='subcommand3')\n"
+        "    subcommand_3_parser.add_argument('arg', type=str, help='arg for subcommand 3')\n"
+        "    subcommand_3_parser.add_argument('-o', '--opt', type=str, help='modifier for subcommand3')\n"
         "\n"  
         "    return parser\n"
     )
@@ -418,12 +401,12 @@ def test_test_config_py(setup):
         "\n"
         "def test_load_from_file(config_file):\n"
         "    config = Config(config_file)\n"
-        "    assert config.get('collection.VAR1') == value1\n"
-        "    assert config.get('collection.VAR2') == value2\n"
+        "    assert config.get('collection.VAR1') == 'value1'\n"
+        "    assert config.get('collection.VAR2') == 'value2'\n"
         "\n"
         "def test_get_existing_key(config_file):\n"
         "    config = Config(config_file)\n"
-        "    assert config.get('collection.VAR1') == value1\n"
+        "    assert config.get('collection.VAR1') == 'value1'\n"
         "\n"
         "def test_get_non_existing_key(config_file):\n"
         "    config = Config(config_file)\n"
@@ -556,7 +539,7 @@ def test_test_package_module_py(setup):
         "    config = Config()\n"
         "    dummy_dir = config.get_tests_directory_path()\n"
         "\n"
-        "    yield dummy_projects_dir, config\n"
+        "    yield dummy_dir, config\n"
         "\n"
         "    for item in dummy_dir.iterdir():\n"
         "        if item.is_dir():\n"
@@ -616,16 +599,16 @@ def test_arg_parser_py(setup):
         "\n"
         "def test_subcommand2():\n"
         "    parser = create_parser()\n"
-        "    args = parser.parse_args(['subcommand2', 'arg1', '--opt', 'optval'])\n"
+        "    args = parser.parse_args(['subcommand2', 'arg1', 'arg2', '--opt', 'optval'])\n"
         "    assert args.command == 'subcommand2'\n"
-        "    assert args.arg_name == ['arg1']\n"
+        "    assert args.listedargs == ['arg1', 'arg2']\n"
         "    assert args.opt == 'optval'\n"
         "\n"
         "def test_subcommand3():\n"
         "    parser = create_parser()\n"
         "    args = parser.parse_args(['subcommand3', 'arg1', '--opt', 'optval'])\n"
         "    assert args.command == 'subcommand3'\n"
-        "    assert args.arg_name == 'arg1'\n"
+        "    assert args.arg == 'arg1'\n"
         "    assert args.opt == 'optval'\n"
     )
 
@@ -673,6 +656,8 @@ def test_test_cli_py(setup):
         "        else:\n"
         "            item.unlink()\n"
         "\n"
+        "REASON = 'Skipping for now. Assumes application is not installed.'\n"
+        "@pytest.mark.skip(reason=REASON)\n"
         "@pytest.mark.script_launch_mode('subprocess')\n"
         "def test_cli_help(script_runner):\n"
         "    result = script_runner.run(['test_project', '--help'])\n"
@@ -680,17 +665,19 @@ def test_test_cli_py(setup):
         "    assert 'usage' in result.stdout\n"
         "    assert result.stderr == ''\n"
         "\n"
+        "@pytest.mark.skip(reason=REASON)\n"
         "@pytest.mark.script_launch_mode('subprocess')\n"
         "def test_cli_version(script_runner):\n"
         "    result = script_runner.run(['test_project', '--version'])\n"
         "    assert result.success\n"
-        "    assert 0.1.0' in result.stdout  # Adjust based on your actual version\n"
+        "    assert '0.1.0' in result.stdout  # Adjust based on your actual version\n"
         "    assert result.stderr == ''\n"
         "\n"
+        "@pytest.mark.skip(reason=REASON)\n"
         "@pytest.mark.script_launch_mode('subprocess')\n"
         "def test_subcommand1(script_runner, setup_and_teardown):\n"
         "    dummy_projects_dir = setup_and_teardown\n"
-        "    ret = script_runner.run(['test_project', 'subcommand1', 'arg1', '--option1', optval])\n"
+        "    ret = script_runner.run(['test_project', 'subcommand1', 'arg1', '--option1', 'optval'])\n"
         "    assert ret.success\n"
     )
 
@@ -698,5 +685,145 @@ def test_test_cli_py(setup):
         ProjectName=project_name,
         packagename=package_name
     )
+
+    assert result == expected
+
+def test_project_setup_py(setup):
+    """
+    Test PROJECT_SETUP_PY
+    """
+    project_name, package_name = setup
+
+    expected = (
+        "\"\"\"\n"
+        "TestProject Setup\n"
+        "\n"
+        "This module contains the setuptools.setup() definition for the TestProject program.\n"
+        "\n"
+        "Usage\n"
+        "    pipx install --editable .\n"
+        "    pipx inject test_project -r requirements.txt\n"
+        "\"\"\"\n"
+        "from setuptools import setup, find_packages\n"
+        "\n"
+        "with open('README.md', 'r') as fh:\n"
+        "    long_description = fh.read()\n"
+        "\n"
+        "setup(\n"
+        "    name='TestProject',\n"
+        "    version='0.1.0',\n"
+        "    author='Emille Giddings',\n"
+        "    author_email='emilledigital@gmail.com',\n"
+        "    description='<description>',\n"
+        "    long_description=long_description,\n"
+        "    long_description_content_type='text/markdown',\n"
+        "    packages=find_packages(),\n"
+        "    include_package_data=True,\n"
+        "    package_data={\n"
+        "        '': ['config.yaml', 'data/gitignore-python', 'data/LICENSE']\n"
+        "    },\n"
+        "    entry_points={\n"
+        "        'console_scripts': ['test_project=test_project.__main__:main']\n"
+        "    },\n"
+        "    tests_require=['pytest'],\n"
+        "    classifiers=[\n"
+        "        'Programming Language :: Python :: 3',\n"
+        "        'Programming Language :: Python :: 3.11',\n"
+        "        'License :: OSI Approved :: MIT License',\n"
+        "        'Operating System :: POSIX',\n"
+        "        'Operating System :: POSIX :: Linux',\n"
+        "        'Development Status :: 3 - Alpha',\n"
+        "        'Intended Audience :: Developers',\n"
+        "        'Topic :: Software Development :: Libraries :: Python Modules',\n"
+        "        'Natural Language :: English',\n"
+        "    ],\n"
+        "    python_requires='>=3.11',\n"
+        ")\n"
+    )
+
+    result = fragments.PROJECT_SETUP_PY.format(
+        ProjectName=project_name,
+        packagename=package_name
+    )
+
+    assert result == expected
+
+def test_project_readme_md(setup):
+    """
+    Test PROJECT_README_MD
+    """
+    project_name, _ = setup
+
+    expected = (
+        "# TestProject"
+    )
+
+    result = fragments.PROJECT_README_PY.format(
+        ProjectName=project_name,
+    )
+
+    assert result == expected
+
+def test_project_manifest_in(setup):
+    """
+    Test PROJECT_MANIFEST_IN
+    """
+    _, package_name = setup
+
+    expected = (
+        "include test_project/config.yaml\n"
+        "include test_project/data/gitignore-python\n"
+        "include test_project/data/LICENSE"
+    )
+
+    result = fragments.PROJECT_MANIFEST_IN.format(
+        packagename=package_name,
+    )
+
+    assert result == expected
+
+def test_project_pytest_ini():
+    """
+    Test PROJECT_PYTEST_INI
+    """
+    expected = (
+        "[pytest]\n"
+        "testpaths = tests/test_config.py tests/test_helpers.py tests/test_utils.py tests/test_arg_parser.py tests/test_cli.py\n"
+        "addopts = --ignore=env --ignore=.venv -sv\n"
+    )
+
+    result = fragments.PROJECT_PYTEST_INI
+
+    assert result == expected
+
+def test_project_license():
+    """
+    Test PROJECT_LICENSE
+    """
+    expected = (
+        "Copyright 2021 Emille Giddings\n"
+        "\n"
+        "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n"
+        "\n"
+        "The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n"
+        "\n"
+        "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n"
+    )
+
+    result = fragments.PROJECT_LICENSE
+
+    assert result == expected
+
+def test_project_config_yaml():
+    """
+    Test PROJECT_CONFIG_YAML
+    """
+    expected = (
+        "settings:\n"
+        "  DUMMY_DIR: tests/dummy\n"
+        "  VAR2: VAL2\n"
+    )
+
+    result = fragments.PROJECT_CONFIG_YAML
 
     assert result == expected
