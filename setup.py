@@ -28,7 +28,7 @@ requirements = read_requirements_file(requirements_txt)
 
 setup(
     name="Pyscaffold",
-    version="1.0.0",
+    version="0.1.0",
     author="Emille Giddings",
     author_email="emilledigital@gmail.com",
     description="Scaffold Python projects",
