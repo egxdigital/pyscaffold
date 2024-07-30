@@ -7,20 +7,30 @@ Usage
     pipx install --editable .
     pipx inject pyscaffold -r requirements.txt
 """
+from pathlib import Path
 from setuptools import setup, find_packages
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+def get_version():
+    version_file = Path(__file__).parent / 'pyscaffold' / '_version.py'
+    with open(version_file) as f:
+        version_globals = {}
+        exec(f.read(), version_globals)
+    return version_globals['__version__']
+
+version = get_version()
+
 setup(
     name="Pyscaffold",
-    version="1.0.0",
+    version=version,
     author="Emille Giddings",
     author_email="emilledigital@gmail.com",
     description="Scaffold Python projects",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    packages=find_packages(),
+    packages=find_packages(include=['pyscaffold', 'pyscaffold.*']),
     include_package_data=True,
     package_data={
         '': ['config.yaml', 'data/gitignore-python', 'data/LICENSE']
