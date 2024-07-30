@@ -5,6 +5,7 @@
 [x] Test arg_parser.py
 [x] Test fragments.py
 [x] Test pyscaffold.py
+[x] Implement docstrings
 
 # TODO: Merge
 [ ] Add _version.py and update setup.py
