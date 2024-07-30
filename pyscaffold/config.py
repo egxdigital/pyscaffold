@@ -2,11 +2,17 @@
 Pyscaffold Config
 
 This module contains configuration definitions for the Pyscaffold application.
+
+Classes:
+    colors: Defines color codes for terminal output.
+    Config: Manages configuration settings loaded from a YAML file.
 """
+
 import yaml
 from pathlib import Path
 
 class colors():
+    """Defines color codes for terminal output."""
     HEADER     = '\033[95m'
     OKBLUE     = '\033[94m'
     OKCYAN     = '\033[96m'
@@ -18,7 +24,19 @@ class colors():
     UNDERLINE  = '\033[4m'
 
 class Config():
+    """
+    Manages configuration settings loaded from a YAML file.
+
+    Attributes:
+        settings (dict): The dictionary to store configuration settings.
+    """
     def __init__(self, config_path=None):
+        """
+        Initializes the Config instance, loading settings from the specified file.
+
+        Args:
+            config_path (str or Path, optional): Path to the YAML configuration file. Defaults to 'config.yaml' in the parent directory.
+        """
         self.settings = {}
         if config_path is None:
             config_path = Path(__file__).resolve().parent.parent / 'config.yaml'
@@ -43,7 +61,7 @@ class Config():
             default: The default value to return if the key is not found.
         
         Returns:
-            The value associated with the key, or the default value.
+            any: The value associated with the key, or the default value.
         """
         keys = key.split('.')
         value = self.settings
@@ -63,7 +81,7 @@ class Config():
             kwargs: The key-value pairs for the new setting.
         
         Returns:
-            self
+            Config: The current instance of the Config class.
         """
         self.settings[name] = kwargs
         return self
@@ -77,7 +95,7 @@ class Config():
             kwargs: The key-value pairs to update the setting with.
         
         Returns:
-            self
+            Config: The current instance of the Config class.
         """
         if name in self.settings:
             self.settings[name].update(kwargs)
