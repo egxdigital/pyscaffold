@@ -32,6 +32,7 @@ def create_parser():
 
     start_parser = subparsers.add_parser('start', help='Start a project')
     start_parser.add_argument('project_names', nargs='+', type=str, help='Name(s) of the project to start')
+    start_parser.add_argument('-p', '--python-version', type=str, default='3.11', help='Python version to use on start')
     start_parser.add_argument('-d', '--destination', type=str, help='Valid directory pathname as project directory')
 
     resume_parser = subparsers.add_parser('resume', help='Resume a project')

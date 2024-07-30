@@ -109,7 +109,7 @@ class Config():
         
         return path
 
-    def get_tests_directory_path(self, abs=False) -> Path:
+    def get_tests_directory_path(self) -> Path:
         """
         Retrieve the path to the test projects directory.
 
@@ -123,8 +123,8 @@ class Config():
             ValueError: If the resolved path does not exist.
         """
         path = Path(self.get("locations.TEST_PROJECTS"))
-        if abs:
-            path = Path(__file__).resolve().parent.parent / path
+        
+        path = Path(__file__).resolve().parent.parent / path
         
         if not path.exists():
             raise ValueError('Tests directory does not exist.')

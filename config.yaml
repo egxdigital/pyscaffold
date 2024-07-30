@@ -1,3 +1,3 @@
 locations:
-  PROJECTS: /mnt/c/Users/engineer/source/python
+  PROJECTS: /home/engineer/source/python/projects
   TEST_PROJECTS: tests/dummyprojects

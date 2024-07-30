@@ -23,7 +23,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     package_data={
-        'pyscaffold': ['config.yaml', 'data/gitignore-python', 'data/LICENSE']
+        '': ['config.yaml', 'data/gitignore-python', 'data/LICENSE']
     },
     entry_points={
         'console_scripts': ['pyscaffold=pyscaffold.__main__:main']

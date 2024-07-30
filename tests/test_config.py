@@ -8,11 +8,13 @@ import pytest
 from pathlib import Path
 from pyscaffold.config import Config
 
+PROJECTS = "/home/engineer/source/python/projects"
+
 sample_config = """
 locations:
-  PROJECTS: /mnt/c/Users/engineer/source/python
+  PROJECTS: {projects}
   TEST_PROJECTS: tests/dummyprojects
-"""
+""".format(projects=PROJECTS)
 
 @pytest.fixture(scope="module")
 def config_file(tmp_path_factory):
@@ -23,12 +25,12 @@ def config_file(tmp_path_factory):
 
 def test_load_from_file(config_file):
     config = Config(config_file)
-    assert config.get("locations.PROJECTS") == "/mnt/c/Users/engineer/source/python"
+    assert config.get("locations.PROJECTS") == PROJECTS
     assert config.get("locations.TEST_PROJECTS") == "tests/dummyprojects"
 
 def test_get_existing_key(config_file):
     config = Config(config_file)
-    assert config.get("locations.PROJECTS") == "/mnt/c/Users/engineer/source/python"
+    assert config.get("locations.PROJECTS") == PROJECTS
 
 def test_get_non_existing_key(config_file):
     config = Config(config_file)
@@ -51,18 +53,12 @@ def test_update_setting(config_file):
 def test_get_projects_directory_path(config_file):
     config = Config(config_file)
     path = config.get_projects_directory_path()
-    assert path == Path("/mnt/c/Users/engineer/source/python")
+    assert path == Path(PROJECTS)
     assert path.exists()  # Ensure this path exists in your environment for the test to pass
 
 def test_get_tests_directory_path(config_file):
     config = Config(config_file)
     path = config.get_tests_directory_path()
-    assert path == Path("tests/dummyprojects")
-    assert path.exists()  # Ensure this path exists in your environment for the test to pass
-
-def test_get_tests_directory_path_abs(config_file):
-    config = Config(config_file)
-    path = config.get_tests_directory_path(abs=True)
     assert path == Path(__file__).resolve().parent.parent / "tests/dummyprojects"
     assert path.exists()  # Ensure this path exists in your environment for the test to pass
 

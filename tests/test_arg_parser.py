@@ -22,9 +22,10 @@ def test_list_command():
 
 def test_start_command():
     parser = create_parser()
-    args = parser.parse_args(['start', 'ProjectA', 'ProjectB', '--destination', 'some/other/directory'])
+    args = parser.parse_args(['start', 'ProjectA', 'ProjectB', '--destination', 'some/other/directory', '--python-version', '3.10'])
     assert args.command == 'start'
     assert args.project_names == ['ProjectA', 'ProjectB']
+    assert args.python_version == '3.10'
     assert args.destination == 'some/other/directory'
 
 def test_resume_command():

@@ -54,12 +54,12 @@ def test_start_command_two_projects(script_runner, setup_and_teardown):
     dummy_projects_dir = setup_and_teardown
     ret = script_runner.run(['pyscaffold', 'start', 'projectA', 'projectB', '--destination', str(dummy_projects_dir)])
     assert ret.success
-    assert f"Starting project: Projecta at {dummy_projects_dir}" in ret.stdout
-    assert f"Starting project: Projectb at {dummy_projects_dir}" in ret.stdout
+    assert f"Starting project: Projecta at {dummy_projects_dir}/Projecta" in ret.stdout
+    assert f"Starting project: Projectb at {dummy_projects_dir}/Projectb" in ret.stdout
 
 @pytest.mark.script_launch_mode('subprocess')
 def test_start_command_with_good_explicit_destination(script_runner):
-    EXPLICIT = '/mnt/c/Users/engineer/source/python/Pyscaffold/tests/dummyprojects'
+    EXPLICIT = '/home/engineer/source/python/projects/Pyscaffold/tests/dummyprojects'
     ret = script_runner.run(['pyscaffold', 'start', 'projectA', '--destination', EXPLICIT])
     assert ret.success
     assert f"Starting project: Projecta at {EXPLICIT}" in ret.stdout
@@ -74,7 +74,7 @@ def test_start_command_with_bad_explicit_destination(script_runner):
 @pytest.mark.script_launch_mode('subprocess')
 def test_resume_existing_project(script_runner, monkeypatch):
     # this test requires the absolute path to the tests directory
-    dummy_projects_dir = Config().get_tests_directory_path(abs=True)
+    dummy_projects_dir = Config().get_tests_directory_path()
     
     project_name = "TestProject"
     project_path = Path(dummy_projects_dir) / project_name
@@ -82,7 +82,6 @@ def test_resume_existing_project(script_runner, monkeypatch):
     # Setup: Create a dummy project directory with setup.py and venv
     project_path.mkdir(parents=True, exist_ok=True)
     (project_path / 'setup.py').touch()
-    #(project_path / 'venv').mkdir(parents=True, exist_ok=True)
 
     # Turn on test mode to get marker file
     monkeypatch.setenv('ON_TEST', '1')
