@@ -2,13 +2,28 @@
 Pyscaffold Argument Parser
 
 This module contains the argument parsing functionality of the Pyscaffold application.
+It defines the command-line interface (CLI) for the application using argparse,
+enabling users to list, start, and resume projects with various options.
 
+Functions:
+    create_parser: Creates and configures the argument parser for the Pyscaffold CLI.
 """
+
 import argparse
 from pyscaffold.config import colors
 from pyscaffold.fragments import pyscaffold_ascii
 
-def create_parser():
+def create_parser() -> argparse.ArgumentParser:
+    """
+    Creates and configures the argument parser for the Pyscaffold CLI.
+
+    This function sets up the argument parser with commands and options for the Pyscaffold application.
+    It includes commands for listing projects, starting new projects, and resuming existing projects,
+    each with their respective arguments and options.
+
+    Returns:
+        argparse.ArgumentParser: The configured argument parser.
+    """
     parser = argparse.ArgumentParser(
         prog='pyscaffold',
         fromfile_prefix_chars='@',
