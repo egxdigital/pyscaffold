@@ -1,9 +1,11 @@
 """
 Pyscaffold
 
-This module contains the definition of the Pyscaffold class.
-
+This module defines the Pyscaffold class, which provides methods for creating and 
+managing Python projects, including setting up project folders, deploying project 
+and test packages, configuring Git ignore files, and managing virtual environments.
 """
+
 import os
 import shutil
 import subprocess
@@ -15,6 +17,11 @@ from pyscaffold import fragments
 from pyscaffold import utils
 
 class Pyscaffold():
+    """
+    A class for scaffolding and managing Python projects with predefined 
+    structure and configurations.
+    """
+
     basic_package_content_map = {
         '__main__.py': fragments.PKG_MAIN_PY,
         'utils.py': fragments.PKG_UTILS_PY,
@@ -44,6 +51,20 @@ class Pyscaffold():
     
     @staticmethod
     def create_project_folder(project_name: str, destination: str) -> Path:
+        """
+        Create a new project folder at the specified destination.
+
+        Args:
+            project_name (str): The name of the project to create.
+            destination (str): The path where the project folder should be created.
+
+        Returns:
+            Path: The path to the newly created project folder.
+
+        Raises:
+            FileExistsError: If a folder with the same name already exists.
+            OSError: If the destination path is not a valid directory.
+        """
         project_path = Path(destination) / project_name
         
         if project_path.exists():
@@ -56,7 +77,18 @@ class Pyscaffold():
         return project_path
      
     @staticmethod
-    def inject_basic_package_contents(project_name: str, package_name: str, package_path: Path):
+    def inject_basic_package_contents(project_name: str, package_name: str, package_path: Path) -> None:
+        """
+        Inject basic package files into the project package directory.
+
+        Args:
+            project_name (str): The name of the project.
+            package_name (str): The name of the package to be created.
+            package_path (Path): The path to the package directory.
+
+        Raises:
+            Exception: If there is an error writing any of the files.
+        """
         for filename_template, content in Pyscaffold.basic_package_content_map.items():
             filename = filename_template.format(packagename=package_name)
             try:
@@ -68,7 +100,19 @@ class Pyscaffold():
 
     @staticmethod
     def deploy_basic_project_package(project_name: str, project_location: Path) -> Tuple[str, Path]:
-        """Deploy a basic package within a project directory."""
+        """
+        Deploy a basic package structure within the project directory.
+
+        Args:
+            project_name (str): The name of the project.
+            project_location (Path): The location where the package should be deployed.
+
+        Returns:
+            Tuple[str, Path]: The name and path of the deployed package.
+
+        Raises:
+            Exception: If there is an error during package deployment.
+        """
         try:
             package_name = helpers.apply_package_naming_convention(project_name)
             package_path = Path(project_location) / package_name
@@ -88,7 +132,18 @@ class Pyscaffold():
         return package_name, package_path
 
     @staticmethod
-    def inject_basic_test_package_contents(project_name: str, test_package_name: str, test_package_path: Path):
+    def inject_basic_test_package_contents(project_name: str, test_package_name: str, test_package_path: Path) -> None:
+        """
+        Inject basic test package files into the project test directory.
+
+        Args:
+            project_name (str): The name of the project.
+            test_package_name (str): The name of the test package.
+            test_package_path (Path): The path to the test package directory.
+
+        Raises:
+            Exception: If there is an error writing any of the files.
+        """
         for filename_template, content in Pyscaffold.basic_test_package_content_map.items():
             filename = filename_template.format(packagename=test_package_name)
             try:
@@ -100,7 +155,19 @@ class Pyscaffold():
     
     @staticmethod
     def deploy_basic_tests_package(project_name: str, project_location: Path) -> Tuple[str, Path]:
-        """Deploy a basic test package within a project directory."""
+        """
+        Deploy a basic test package structure within the project directory.
+
+        Args:
+            project_name (str): The name of the project.
+            project_location (Path): The location where the test package should be deployed.
+
+        Returns:
+            Tuple[str, Path]: The name and path of the deployed test package.
+
+        Raises:
+            Exception: If there is an error during test package deployment.
+        """
         try:
             test_package_name = "tests"
             test_package_path = Path(project_location) / test_package_name
@@ -122,6 +189,16 @@ class Pyscaffold():
         
     @staticmethod
     def inject_basic_project_contents(project_name: str, project_path: Path) -> None:
+        """
+        Inject basic project files into the project directory.
+
+        Args:
+            project_name (str): The name of the project.
+            project_path (Path): The path to the project directory.
+
+        Raises:
+            Exception: If there is an error writing any of the files.
+        """
         for filename, content in Pyscaffold.basic_project_content_map.items():
             try:
                 with open(project_path / filename, "w", encoding="utf-8") as f:
@@ -132,6 +209,17 @@ class Pyscaffold():
     
     @staticmethod
     def inject_gitignore(project_path: Path) -> None:
+        """
+        Inject a .gitignore file into the project directory.
+
+        Args:
+            project_path (Path): The path to the project directory.
+
+        Raises:
+            PermissionError: If there is a permission issue while accessing or writing files.
+            FileNotFoundError: If the .gitignore template file is not found.
+            RuntimeError: For unexpected errors during the .gitignore injection process.
+        """
         data_directory = Path(__file__).parent.parent / 'data'
         gitignore_path = data_directory / 'gitignore-python'
         
@@ -156,6 +244,20 @@ class Pyscaffold():
     
     @staticmethod
     def deploy_virtual_environment(project_path: Path, python_version: str = '3.11') -> bool:
+        """
+        Create a virtual environment in the specified project directory.
+
+        Args:
+            project_path (Path): The path to the project directory.
+            python_version (str): The version of Python to use for the virtual environment (default: '3.11').
+
+        Returns:
+            bool: True if the virtual environment was created successfully.
+
+        Raises:
+            RuntimeError: If the specified Python version is not installed or not found in PATH.
+            subprocess.CalledProcessError: If there is an error creating the virtual environment.
+        """
         venv_path = project_path / 'env'
         python_executable = f'python{python_version}'
 
@@ -172,7 +274,22 @@ class Pyscaffold():
         return True
     
     @staticmethod
-    def start(project_names, python_version, **kwargs):
+    def start(project_names, python_version, **kwargs) -> bool:
+        """
+        Initialize and set up projects with the specified names.
+
+        Args:
+            project_names (list of str): The names of the projects to be created.
+            python_version (str): The version of Python to use for the virtual environment.
+            **kwargs: Additional keyword arguments. The 'destination' key specifies where to create the projects.
+
+        Returns:
+            bool: True if all projects were initialized and set up successfully.
+
+        Raises:
+            RuntimeError: If the specified Python version is not installed or not found in PATH.
+            Exception: For other errors that occur during project setup.
+        """
         destination = kwargs.get('destination', None)
         
         for project_name in project_names:
@@ -205,7 +322,22 @@ class Pyscaffold():
         return True
     
     @staticmethod
-    def resume(project_name, destination, **kwargs):
+    def resume(project_name, destination, **kwargs) -> bool:
+        """
+        Resume a project by activating its virtual environment.
+
+        Args:
+            project_name (str): The name of the project to resume.
+            destination (str): The path where the project is located.
+            **kwargs: Additional keyword arguments (not used).
+
+        Returns:
+            bool: True if the virtual environment was successfully activated.
+
+        Raises:
+            FileNotFoundError: If the project does not exist at the specified destination.
+            ValueError: If the project directory is not valid.
+        """
         project_path = Path(destination) / project_name
 
         if not utils.project_exists(project_name, destination):
